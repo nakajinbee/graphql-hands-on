@@ -1,11 +1,54 @@
 
-# Python
-__pycache__/
-*.py[cod]
+# ======================================
+# Python / FastAPI / Strawberry 環境用
+# ======================================
+
+# 仮想環境
 .venv/
-.env
 .envrc
 
-# VSCode
-.vscode/
+# Pythonキャッシュ
+__pycache__/
+*.py[cod]
+*$py.class
 
+# 環境変数ファイル
+.env
+*.env
+
+# ログ・一時ファイル
+*.log
+*.tmp
+
+# uv / pip / buildキャッシュ
+.uv/
+.build/
+dist/
+*.egg-info/
+
+# テストキャッシュ
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ======================================
+# エディタ・IDE
+# ======================================
+.vscode/
+.idea/
+
+# ======================================
+# システム固有ファイル
+# ======================================
+# macOS固有ファイル
+.DS_Store
+
+# ======================================
+# Node.js (fnmで管理中の場合)
+# ======================================
+node_modules/
+.npm/
+.pnpm-store/
+.nvmrc
+package-lock.json
+yarn.lock
