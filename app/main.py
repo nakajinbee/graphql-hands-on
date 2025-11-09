@@ -4,28 +4,53 @@ from strawberry.fastapi import GraphQLRouter
 from typing import Optional
 
 # ===========================
-# 1️⃣ オブジェクト型(User)定義
+# 1️⃣ オブジェクト型定義
 # ===========================
+@strawberry.type
+class Post:
+    id: int
+    title: str
+    content: str
+    user_id: int
+
 @strawberry.type
 class User:
     id: int
     name: str
     age: int
 
+    @strawberry.field
+    def posts(self) -> list[Post]:
+        return [p for p in posts_data if p.user_id == self.id]
+
 
 # ===========================
-# 2️⃣ データの保存領域（擬似DB）
+# 入力型定義
 # ===========================
-# メモリ上で一時的に保持
+@strawberry.input
+class UserInput:
+    name: str
+    age: int
+
+
+# ===========================
+# 擬似DB（ユーザー）
+# ===========================
 users_data: list[User] = [
     User(id=1, name="Alice", age=25),
     User(id=2, name="Bob", age=30),
-    User(id=3, name="Charlie", age=22),
 ]
 
+# ===========================
+# 擬似DB（投稿）
+# ===========================
+posts_data: list[Post] = [
+    Post(id=1, title="Hello GraphQL", content="GraphQL is great!", user_id=1),
+    Post(id=2, title="My Second Post", content="FastAPI works well with Strawberry", user_id=2),
+]
 
 # ===========================
-# 3️⃣ Query定義
+# 3️ Query定義
 # ===========================
 @strawberry.type
 class Query:
@@ -42,14 +67,14 @@ class Query:
 
 
 # ===========================
-# 4️⃣ Mutation定義
+# Mutation定義
 # ===========================
 @strawberry.type
 class Mutation:
     @strawberry.mutation
-    def create_user(self, name: str, age: int) -> User:
+    def create_user(self, input: UserInput) -> User:
         new_id = len(users_data) + 1
-        new_user = User(id=new_id, name=name, age=age)
+        new_user = User(id=new_id, name=input.name, age=input.age)
         users_data.append(new_user)
         return new_user
 
@@ -75,7 +100,7 @@ class Mutation:
 
 
 # ===========================
-# 5️⃣ スキーマとFastAPI統合
+# スキーマとFastAPI統合
 # ===========================
 schema = strawberry.Schema(query=Query, mutation=Mutation)
 app = FastAPI()
